@@ -7,6 +7,13 @@
     "node": ">= 22.9.0"
   },
   "packageManager": "yarn@1.22.22",
+  "repository": {
+    "url": "https://github.com/Studio-Klypi/Portal"
+  },
+  "bugs": {
+    "url": "https://github.com/Studio-Klypi/Portal/issues",
+    "email": "contact@studio-klypi.com"
+  },
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev --host",
