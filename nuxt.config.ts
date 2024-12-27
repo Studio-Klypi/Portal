@@ -5,8 +5,12 @@ export default defineNuxtConfig({
     "@nuxtjs/tailwindcss",
     "@nuxtjs/color-mode",
     "@nuxtjs/i18n",
+    "nuxt-scheduler",
   ],
   devtools: { enabled: true },
+  colorMode: {
+    classSuffix: "",
+  },
   compatibilityDate: "2024-11-01",
   eslint: {
     checker: true,
@@ -18,18 +22,15 @@ export default defineNuxtConfig({
       },
     },
   },
+  i18n: {
+    vueI18n: "./i18n.config.ts",
+    defaultLocale: "fr",
+    locales: ["fr", "en"],
+  },
   tailwindcss: {
     cssPath: ["assets/css/tailwind.css", { injectPosition: "first" }],
     configPath: "tailwind.config",
     exposeConfig: false,
     viewer: false,
-  },
-  colorMode: {
-    classSuffix: "",
-  },
-  i18n: {
-    vueI18n: "./i18n.config.ts",
-    defaultLocale: "fr",
-    locales: ["fr", "en"],
   },
 });
