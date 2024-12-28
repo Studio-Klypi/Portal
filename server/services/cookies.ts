@@ -11,6 +11,12 @@ export function setAuthCookies(event: HttpRequest, token: string, userUuid: stri
   setAuthTokenCookie(event, token);
   setUserUuidCookie(event, userUuid);
 }
+export function getAuthCookies(event: HttpRequest): { token: string | undefined; userUuid: string | undefined } {
+  return {
+    token: getAuthTokenCookie(event),
+    userUuid: getUserUuidCookie(event),
+  };
+}
 export function clearAuthCookies(event: HttpRequest) {
   clearAuthTokenCookie(event);
   clearUserUuidCookie(event);
@@ -19,11 +25,17 @@ export function clearAuthCookies(event: HttpRequest) {
 export function setAuthTokenCookie(event: HttpRequest, value: string) {
   setCookie(event, key_AuthToken, value);
 }
+export function getAuthTokenCookie(event: HttpRequest): string | undefined {
+  return getCookie(event, key_AuthToken);
+}
 export function clearAuthTokenCookie(event: HttpRequest) {
   deleteCookie(event, key_AuthToken);
 }
 export function setUserUuidCookie(event: HttpRequest, value: string) {
   setCookie(event, key_UserUuid, value);
+}
+export function getUserUuidCookie(event: HttpRequest): string | undefined {
+  return getCookie(event, key_UserUuid);
 }
 export function clearUserUuidCookie(event: HttpRequest) {
   deleteCookie(event, key_UserUuid);
