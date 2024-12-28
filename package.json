@@ -32,6 +32,8 @@
     "@nuxtjs/i18n": "9.1.1",
     "@nuxtjs/tailwindcss": "6.12.2",
     "@prisma/client": "^6.1.0",
+    "@vee-validate/zod": "^4.15.0",
+    "@vueuse/core": "^12.2.0",
     "argon2": "^0.41.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -40,10 +42,13 @@
     "nuxt": "^3.15.0",
     "nuxt-scheduler": "0.1.9",
     "radix-vue": "^1.9.11",
+    "shadcn-nuxt": "0.11.3",
     "tailwind-merge": "^2.6.0",
     "tailwindcss-animate": "^1.0.7",
+    "vee-validate": "^4.15.0",
     "vue": "latest",
-    "vue-router": "latest"
+    "vue-router": "latest",
+    "zod": "^3.24.1"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",

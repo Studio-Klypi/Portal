@@ -6,6 +6,7 @@ export default defineNuxtConfig({
     "@nuxtjs/color-mode",
     "@nuxtjs/i18n",
     "nuxt-scheduler",
+    "shadcn-nuxt",
   ],
   devtools: { enabled: true },
   colorMode: {
