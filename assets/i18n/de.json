@@ -1,0 +1,16 @@
+{
+  "btn": {
+    "back": "Zurück"
+  },
+  "auth": {
+    "login": {
+      "title": "Anmeldung",
+      "fields": {
+        "email": "E-Mail-Adresse",
+        "password":  "Passwort"
+      },
+      "submit": "Anmelden",
+      "submit-loading": "Wird angemeldet..."
+    }
+  }
+}

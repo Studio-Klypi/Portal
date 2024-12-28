@@ -26,7 +26,7 @@ export default defineNuxtConfig({
   i18n: {
     vueI18n: "./i18n.config.ts",
     defaultLocale: "fr",
-    locales: ["fr", "en"],
+    locales: ["fr", "en", "de"],
   },
   tailwindcss: {
     cssPath: ["assets/css/tailwind.css", { injectPosition: "first" }],

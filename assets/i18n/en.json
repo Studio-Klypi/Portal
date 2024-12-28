@@ -1,3 +1,16 @@
 {
-  "helloWorld": "Hello World!"
+  "btn": {
+    "back": "Back"
+  },
+  "auth": {
+    "login": {
+      "title": "Login",
+      "fields": {
+        "email": "Email Address",
+        "password":  "Password"
+      },
+      "submit": "Log In",
+      "submit-loading": "Logging In..."
+    }
+  }
 }
