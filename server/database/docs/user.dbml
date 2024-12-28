@@ -1,0 +1,29 @@
+// > User
+Table User {
+  uuid uuid pk [default: `uuid()`]
+
+  // login
+  email string unique
+  password string
+
+  // data
+  firstname string
+  lastname string
+  avatarUri string [null]
+  admin boolean [default: false]
+
+  // dates
+  createdAt datetime [default: `now()`]
+  updatedAt datetime [default: `now()`]
+}
+
+Table Session {
+  token uuid pk [default: `uuid()`]
+  userUuid uuid pk
+
+  // dates
+  createdAt datetime [default: `now()`]
+  expiresAt datetime
+  revokedAt datetime [null]
+}
+Ref: Session.userUuid > User.uuid

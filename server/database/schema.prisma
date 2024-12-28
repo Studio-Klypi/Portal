@@ -9,8 +9,30 @@ datasource db {
 
 // MODELS
 model User {
-  uid  String @id @default(uuid())
-  name String @unique
+  uuid      String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  firstname String
+  lastname  String
+  avatarUri String?
+  admin     Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  sessions Session[]
 
   @@map("users")
+}
+
+model Session {
+  token     String    @default(uuid())
+  userUuid  String
+  createdAt DateTime  @default(now())
+  expiresAt DateTime
+  revokedAt DateTime?
+
+  user User @relation(fields: [userUuid], references: [uuid], onDelete: Cascade)
+
+  @@id([token, userUuid])
+  @@map("sessions")
 }
