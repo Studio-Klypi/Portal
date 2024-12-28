@@ -12,9 +12,6 @@ export async function createAccount(event: HttpRequest, payload: ICreateUserPayl
     async () => {
       const user = await userRepo.create(payload);
 
-      const session = await authRepo.create(user.uuid);
-      setAuthCookies(event, session.token, session.userUuid);
-
       event.node.res.statusCode = HttpCode.Created;
       return user;
     },
@@ -50,6 +47,19 @@ export async function loginAccount(event: HttpRequest, payload: { email: string;
         return {
           code: HttpCode.Unauthorized,
           message: "Wrong credentials used!",
+        };
+    },
+  );
+}
+export async function whoAmI(event: HttpRequest, uuid: string) {
+  return handleError(
+    event,
+    async () => await userRepo.get(uuid),
+    (e) => {
+      if (e instanceof NotFoundError)
+        return {
+          code: HttpCode.NotFound,
+          message: "User not found!",
         };
     },
   );
