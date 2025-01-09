@@ -14,6 +14,10 @@ export default {
         "2xl": "1400px",
       },
     },
+    fontFamily: {
+      barlow: "Barlow, Helvetica, Arial, sans-serif",
+      barlowCondensed: "'Barlow Condensed', Helvetica, Arial, sans-serif",
+    },
     extend: {
       colors: {
         border: "hsl(var(--border))",

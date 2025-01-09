@@ -6,6 +6,8 @@ export default defineNuxtConfig({
     "@nuxtjs/color-mode",
     "@nuxtjs/i18n",
     "nuxt-scheduler",
+    "shadcn-nuxt",
+    "@nuxtjs/google-fonts",
   ],
   devtools: { enabled: true },
   colorMode: {
@@ -22,10 +24,16 @@ export default defineNuxtConfig({
       },
     },
   },
+  googleFonts: {
+    families: {
+      "Barlow": [400, 500, 600, 700, 800, 900],
+      "Barlow Condensed": [700, 800, 900],
+    },
+  },
   i18n: {
     vueI18n: "./i18n.config.ts",
     defaultLocale: "fr",
-    locales: ["fr", "en"],
+    locales: ["fr", "en", "de"],
   },
   tailwindcss: {
     cssPath: ["assets/css/tailwind.css", { injectPosition: "first" }],

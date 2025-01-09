@@ -1,3 +1,16 @@
 {
-  "helloWorld": "Bonjour Monde !"
+  "btn": {
+    "back": "Retour"
+  },
+  "auth": {
+    "login": {
+      "title": "Connexion",
+      "fields": {
+        "email": "Adresse e-mail",
+        "password":  "Mot de passe"
+      },
+      "submit": "Me connecter",
+      "submit-loading": "Connexion..."
+    }
+  }
 }
