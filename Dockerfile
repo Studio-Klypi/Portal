@@ -8,8 +8,7 @@ RUN yarn install
 
 RUN npx prisma generate
 
-CMD npx prisma migrate deploy
-
+RUN npx prisma migrate deploy
 RUN npx prisma db seed
 
 CMD yarn build && node .output/server/index.mjs
