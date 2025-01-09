@@ -6,7 +6,7 @@ const data = [
     lastname: "ROOT",
     admin: true,
     email: "root@root.xyz",
-    password: "$argon2i$v=19$m=16,t=2,p=1$bXlmdWNraW5na2V5$sMALdny5V3whwCddTsscRQ",
+    password: "$argon2id$v=19$m=65536,t=3,p=4$QJRHh3MXRqIq2IXXHWw8CQ$iBdIiJGWCTMp2E+CzaPnH6Nui3Mt6X91MafToKmfKig",
   },
 ];
 
