@@ -1,9 +1,29 @@
 {
   "btn": {
-    "back": "Retour"
+    "back": "Retour",
+    "cancel": "Annuler",
+    "delete": "Supprimer"
+  },
+  "navigation": {
+    "client": {
+      "dashboard": "Tableau de bord"
+    },
+    "admin": {
+      "label": "Administration",
+      "users": "Utilisateurs"
+    },
+    "user": {
+      "notifications": "Notifications",
+      "settings": "Paramètres",
+      "logout": "Déconnexion"
+    }
+  },
+  "home": {
+    "tab": "Portail, bienvenue !"
   },
   "auth": {
     "login": {
+      "tab": "Portail · Connexion",
       "title": "Connexion",
       "fields": {
         "email": "Adresse e-mail",
@@ -11,6 +31,42 @@
       },
       "submit": "Me connecter",
       "submit-loading": "Connexion..."
+    }
+  },
+  "admin": {
+    "user": {
+      "list": {
+        "tab": "ADMIN · Utilisateurs",
+        "title": "Utilisateurs",
+        "dialog": {
+          "newUser": {
+            "title": "Nouvel utilisateur",
+            "trigger": "Ajouter un utilisateur",
+            "fields": {
+              "firstname": "Prénom",
+              "lastname": "Nom",
+              "email": "Adresse e-mail",
+              "password": "Mot de passe",
+              "admin": "Faire de cet utilisateur un administateur."
+            },
+            "action": {
+              "idle": "Ajouter l'utilisateur",
+              "loading": "Ajout de l'utilisateur..."
+            }
+          }
+        },
+        "actions": {
+          "promote": "Promouvoir administrateur",
+          "demote": "Rétrograder utilisateur"
+        },
+        "table": {
+          "firstname": "Prénom",
+          "lastname": "Nom",
+          "email": "Adresse e-mail",
+          "createdAt": "Créé le",
+          "updatedAt": "Mis à jour le"
+        }
+      }
     }
   }
 }
