@@ -64,3 +64,26 @@ export async function whoAmI(event: HttpRequest, uuid: string) {
     },
   );
 }
+
+export async function getUsersList(event: HttpRequest) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const params = getQuery(event) as any;
+  const offset = Number(params.offset ?? 0);
+  const limit = Number(params.limit ?? 20);
+  const search = params.search as string | undefined;
+
+  let list;
+
+  if (search)
+    list = await userRepo.search(search);
+  else
+    list = await userRepo.getList(offset, limit);
+
+  if (!list.length)
+    event.node.res.statusCode = HttpCode.NoContent;
+
+  return {
+    usersCount: await userRepo.count(),
+    data: list,
+  };
+}

@@ -58,6 +58,54 @@ export async function getByEmail(email: string): Promise<IUser> {
 
   return user as IUser;
 }
+export async function getList(offset: number, limit: number): Promise<IUser[]> {
+  const list = await prisma.user.findMany({
+    skip: offset,
+    take: limit,
+    orderBy: {
+      createdAt: "asc",
+    },
+  });
+  return list.map((dbUser) => {
+    const user = { ...dbUser } as Partial<IBackUser>;
+    delete user.password;
+    return user as IUser;
+  });
+}
+export async function search(search: string): Promise<IUser[]> {
+  const list = await prisma.user.findMany({
+    where: {
+      OR: [
+        {
+          firstname: {
+            contains: search,
+          },
+        },
+        {
+          lastname: {
+            contains: search,
+          },
+        },
+        {
+          email: {
+            contains: search,
+          },
+        },
+      ],
+    },
+    orderBy: {
+      createdAt: "asc",
+    },
+  });
+  return list.map((dbUser) => {
+    const user = { ...dbUser } as Partial<IBackUser>;
+    delete user.password;
+    return user as IUser;
+  });
+}
+export async function count(): Promise<number> {
+  return prisma.user.count();
+}
 
 export async function verifyPassword(email: string, password: string): Promise<boolean> {
   const user = await getBack(email);
