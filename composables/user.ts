@@ -50,7 +50,7 @@ export async function sendCreateUser(payload: {
     state = false;
 
     switch ((e as FetchError).statusCode) {
-      case HttpCode.Gone:
+      case HttpCode.Unauthorized:
         await virtualLogout();
         break;
       default:
@@ -81,7 +81,7 @@ export async function getUsersList(page: number = 1) {
   }
   catch (e) {
     switch ((e as FetchError).statusCode) {
-      case HttpCode.Gone:
+      case HttpCode.Unauthorized:
         await virtualLogout();
         break;
       default:
@@ -109,7 +109,7 @@ export async function searchUsers(search: string) {
   }
   catch (e) {
     switch ((e as FetchError).statusCode) {
-      case HttpCode.Gone:
+      case HttpCode.Unauthorized:
         await virtualLogout();
         break;
       default:
@@ -134,7 +134,7 @@ export async function sendUpdatePassword(uuid: string, password: string) {
   }
   catch (e) {
     switch ((e as FetchError).statusCode) {
-      case HttpCode.Gone:
+      case HttpCode.Unauthorized:
         await virtualLogout();
         break;
       default:
@@ -158,7 +158,7 @@ export async function sendUpdateAdmin(uuid: string, state: boolean) {
   }
   catch (e) {
     switch ((e as FetchError).statusCode) {
-      case HttpCode.Gone:
+      case HttpCode.Unauthorized:
         await virtualLogout();
         break;
       default:
@@ -179,7 +179,7 @@ export async function sendDelete(uuid: string) {
   }
   catch (e) {
     switch ((e as FetchError).statusCode) {
-      case HttpCode.Gone:
+      case HttpCode.Unauthorized:
         await virtualLogout();
         break;
       default:

@@ -49,13 +49,13 @@ export default (user: IUser, t: (p: string) => string): ColumnDef<IUser>[] => [
   },
   {
     accessorKey: "createdAt",
-    header: () => h("div", { class: "" }, t("admin.user.list.table.createdAt")),
-    cell: ({ row }) => h("div", { class: "" }, relativeDate(row.getValue("createdAt") as string)),
+    header: () => h("div", { class: "whitespace-nowrap" }, t("admin.user.list.table.createdAt")),
+    cell: ({ row }) => h("div", { class: "whitespace-nowrap" }, relativeDate(row.getValue("createdAt") as string)),
   },
   {
     accessorKey: "updatedAt",
-    header: () => h("div", { class: "" }, t("admin.user.list.table.updatedAt")),
-    cell: ({ row }) => h("div", { class: "" }, relativeDate(row.getValue("updatedAt") as string)),
+    header: () => h("div", { class: "whitespace-nowrap" }, t("admin.user.list.table.updatedAt")),
+    cell: ({ row }) => h("div", { class: "whitespace-nowrap" }, relativeDate(row.getValue("updatedAt") as string)),
   },
   {
     id: "action",

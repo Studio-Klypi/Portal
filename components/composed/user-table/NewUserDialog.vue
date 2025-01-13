@@ -120,7 +120,7 @@ const onSubmit = handleSubmit(async (values) => {
           </FormItem>
         </FormField>
 
-        <DialogFooter>
+        <DialogFooter class="gap-2">
           <DialogClose as-child>
             <Button variant="secondary">
               {{ t("btn.cancel") }}

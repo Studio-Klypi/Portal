@@ -79,7 +79,16 @@ onMounted(async () => await loadUsers(page.value, false));
           />
         </Button>
         <NewUserDialog @user-created="loadUsers(page, false)">
-          <Button :disabled="loading">
+          <Button
+            class="md:hidden"
+            size="icon"
+          >
+            <Plus />
+          </Button>
+          <Button
+            :disabled="loading"
+            class="hidden md:flex"
+          >
             <Plus />
             <span>{{ t("admin.user.list.dialog.newUser.trigger") }}</span>
           </Button>
