@@ -1,5 +1,4 @@
 <script setup lang="ts">
-// import { MoreHorizontal } from "lucide-vue-next";
 import { Plus, RefreshCw } from "lucide-vue-next";
 import { usersPerPage } from "assets/config";
 import PageRoot from "~/components/composing/page/PageRoot.vue";
@@ -21,7 +20,7 @@ const users = useUserList();
 const totalUsers = ref<number>(1);
 
 const { query } = useRoute();
-const page = computed(() => {
+const activePage = computed(() => {
   const p = Number(query.page);
   return isNaN(p) || p < 1 ? 1 : p;
 });
@@ -43,12 +42,12 @@ async function performSearch(search?: string) {
   }
   else {
     searched.value = false;
-    await getUsersList(page.value);
+    await getUsersList(activePage.value);
   }
 
   loading.value = false;
 }
-onMounted(async () => await loadUsers(page.value, false));
+onMounted(async () => await loadUsers(activePage.value, false));
 </script>
 
 <template>
@@ -72,25 +71,16 @@ onMounted(async () => await loadUsers(page.value, false));
           variant="outline"
           size="icon"
           :disabled="loading"
-          @click="loadUsers(page, false)"
+          @click="loadUsers(activePage, false)"
         >
           <RefreshCw
             :class="{ 'animate-spin': loading }"
           />
         </Button>
-        <NewUserDialog @user-created="loadUsers(page, false)">
-          <Button
-            class="md:hidden"
-            size="icon"
-          >
+        <NewUserDialog @user-created="loadUsers(activePage, false)">
+          <Button :disabled="loading">
             <Plus />
-          </Button>
-          <Button
-            :disabled="loading"
-            class="hidden md:flex"
-          >
-            <Plus />
-            <span>{{ t("admin.user.list.dialog.newUser.trigger") }}</span>
+            <span class="hidden md:inline-block">{{ t("admin.user.list.dialog.newUser.trigger") }}</span>
           </Button>
         </NewUserDialog>
       </header>

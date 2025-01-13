@@ -3,14 +3,21 @@ import { error, handleError, HttpCode } from "~/types/generics/http";
 import type { ICreateUserPayload } from "~/types/user";
 import * as userRepo from "~/server/database/repositories/user";
 import * as authRepo from "~/server/database/repositories/auth";
+import * as mailService from "~/server/services/email";
 import { ConflictError, NotFoundError, UnauthorizedError } from "~/types/generics/error";
 import { setAuthCookies } from "~/server/services/cookies";
+import userAccountCreatedTemplate from "~/server/emails/templates/auth/userAccountCreated";
+import userAccountDeletedTemplate from "~/server/emails/templates/auth/userAccountDeleted";
+import userPromotedTemplate from "~/server/emails/templates/auth/userPromoted";
+import userDemotedTemplate from "~/server/emails/templates/auth/userDemoted";
 
 export async function createAccount(event: HttpRequest, payload: ICreateUserPayload) {
   return handleError(
     event,
     async () => {
       const user = await userRepo.create(payload);
+
+      mailService.send(userAccountCreatedTemplate(payload.email, payload.password)).then();
 
       event.node.res.statusCode = HttpCode.Created;
       return user;
@@ -133,9 +140,14 @@ export async function updateAdminRole(event: HttpRequest) {
         message: "User is already a regular user!",
       });
 
-    return await userRepo.update(uuid, {
+    const updatedUser = await userRepo.update(uuid, {
       admin,
     });
+    mailService.send(updatedUser.admin
+      ? userPromotedTemplate(updatedUser.email)
+      : userDemotedTemplate(updatedUser.email)).then();
+
+    return updatedUser;
   }, (e: unknown) => {
     if (e instanceof NotFoundError)
       return {
@@ -154,6 +166,9 @@ export async function deleteUser(event: HttpRequest) {
         code: HttpCode.BadRequest,
         message: "Missing uuid!",
       });
+
+    const user = await userRepo.get(uuid);
+    mailService.send(userAccountDeletedTemplate(user.email)).then();
 
     return await userRepo.destroy(uuid);
   }, (e: unknown) => {
