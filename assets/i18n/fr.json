@@ -53,11 +53,37 @@
               "idle": "Ajouter l'utilisateur",
               "loading": "Ajout de l'utilisateur..."
             }
+          },
+          "deleteUser": {
+            "title": "Es-tu sûr ?",
+            "caption": "Supprimer un utilisateur est définitif. Es-tu sûr de vouloir supprimer {name} ?",
+            "action": "Oui, continuer"
+          },
+          "promote": {
+            "title": "Es-tu sûr ?",
+            "caption": "Donner les droits d'administration est un risque considérable au vu des permissions qui le seront accordées ! Es-tu sûr de vouloir poursuivre ?",
+            "action": "Oui, continuer"
+          },
+          "demote": {
+            "title": "Es-tu sûr ?",
+            "caption": "En continuant la modification, l'utilisateur perdra tous ses droits d'administrateur et donc, toutes les permissions de modification qui lui avaient été accordées ! Es-tu sûr de vouloir continuer ?",
+            "action": "Oui, continuer"
+          },
+          "updatePassword": {
+            "title": "Nouveau mot de passe",
+            "fields": {
+              "newPassword": "Nouveau mot de passe"
+            },
+            "action": {
+              "idle": "Sauvegarder",
+              "loading": "Enregistrement..."
+            }
           }
         },
         "actions": {
           "promote": "Promouvoir administrateur",
-          "demote": "Rétrograder utilisateur"
+          "demote": "Rétrograder utilisateur",
+          "changePassword": "Changer le mot de passe"
         },
         "table": {
           "firstname": "Prénom",

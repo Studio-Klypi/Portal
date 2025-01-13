@@ -96,7 +96,10 @@ const onSubmit = handleSubmit(async (values) => {
           <FormItem>
             <FormLabel>{{ t(`${init}.fields.password`) }}</FormLabel>
             <FormControl v-bind="componentField">
-              <Input placeholder="············" />
+              <Input
+                type="password"
+                placeholder="············"
+              />
             </FormControl>
           </FormItem>
         </FormField>
@@ -118,12 +121,19 @@ const onSubmit = handleSubmit(async (values) => {
         </FormField>
 
         <DialogFooter>
-          <DialogClose>
+          <DialogClose as-child>
             <Button variant="secondary">
-              Cancel
+              {{ t("btn.cancel") }}
             </Button>
           </DialogClose>
-          <Button>Submit</Button>
+          <Button :disabled="loading">
+            <template v-if="loading">
+              {{ t(`${init}.action.loading`) }}
+            </template>
+            <template v-else>
+              {{ t(`${init}.action.idle`) }}
+            </template>
+          </Button>
         </DialogFooter>
       </form>
     </DialogContent>

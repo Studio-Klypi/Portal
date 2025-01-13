@@ -1,5 +1,5 @@
 import type { HttpRequest } from "~/types/generics/http";
-import { handleError, HttpCode } from "~/types/generics/http";
+import { error, handleError, HttpCode } from "~/types/generics/http";
 import type { ICreateUserPayload } from "~/types/user";
 import * as userRepo from "~/server/database/repositories/user";
 import * as authRepo from "~/server/database/repositories/auth";
@@ -86,4 +86,82 @@ export async function getUsersList(event: HttpRequest) {
     usersCount: await userRepo.count(),
     data: list,
   };
+}
+
+export async function updatePassword(event: HttpRequest) {
+  return handleError(event, async () => {
+    const password = (await readBody<{ password: string }>(event)).password;
+    const uuid = getRouterParam(event, "uuid");
+
+    if (!uuid)
+      return error(event, {
+        code: HttpCode.BadRequest,
+        message: "Missing uuid!",
+      });
+
+    return await userRepo.update(uuid, { password });
+  }, (e: unknown) => {
+    if (e instanceof NotFoundError)
+      return {
+        code: HttpCode.NotFound,
+        message: "User not found!",
+      };
+
+    return;
+  });
+}
+export async function updateAdminRole(event: HttpRequest) {
+  return handleError(event, async () => {
+    const admin = (await readBody<{ admin: boolean }>(event)).admin;
+    const uuid = getRouterParam(event, "uuid");
+
+    if (!uuid)
+      return error(event, {
+        code: HttpCode.BadRequest,
+        message: "Missing uuid!",
+      });
+
+    const user = await userRepo.get(uuid);
+    if (user.admin && admin)
+      return error(event, {
+        code: HttpCode.Conflict,
+        message: "User is already an administrator!",
+      });
+    if (!user.admin && !admin)
+      return error(event, {
+        code: HttpCode.Conflict,
+        message: "User is already a regular user!",
+      });
+
+    return await userRepo.update(uuid, {
+      admin,
+    });
+  }, (e: unknown) => {
+    if (e instanceof NotFoundError)
+      return {
+        code: HttpCode.NotFound,
+        message: "User not found!",
+      };
+
+    return;
+  });
+}
+export async function deleteUser(event: HttpRequest) {
+  return handleError(event, async () => {
+    const uuid = getRouterParam(event, "uuid");
+    if (!uuid)
+      return error(event, {
+        code: HttpCode.BadRequest,
+        message: "Missing uuid!",
+      });
+
+    return await userRepo.destroy(uuid);
+  }, (e: unknown) => {
+    if (e instanceof NotFoundError)
+      return {
+        code: HttpCode.NotFound,
+        message: "User not found!",
+      };
+    return;
+  });
 }

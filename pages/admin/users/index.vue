@@ -1,6 +1,7 @@
 <script setup lang="ts">
 // import { MoreHorizontal } from "lucide-vue-next";
-import { Plus, RefreshCcw } from "lucide-vue-next";
+import { Plus, RefreshCw } from "lucide-vue-next";
+import { usersPerPage } from "assets/config";
 import PageRoot from "~/components/composing/page/PageRoot.vue";
 import type { IUser } from "~/types/user";
 import columns from "~/components/composed/user-table/userTableColumns";
@@ -10,13 +11,12 @@ import PageHeader from "~/components/composing/page/PageHeader.vue";
 import PageTitle from "~/components/composing/page/PageTitle.vue";
 import NewUserDialog from "~/components/composed/user-table/NewUserDialog.vue";
 
-const perPage = 20;
-
 const { t } = useI18n();
 const localePath = useLocalePath();
 
 const user = useUser();
 const loading = ref<boolean>(true);
+const searched = ref<boolean>(true);
 const users = useUserList();
 const totalUsers = ref<number>(1);
 
@@ -31,37 +31,20 @@ async function loadUsers(targetPage: number, redirect: boolean = true) {
     await navigateTo(localePath(`/admin/users?page=${targetPage}`));
 
   loading.value = true;
-
-  const res = await $fetch<{ usersCount: number; data: IUser[] }>(`/api/user/list?offset=${(targetPage - 1) * perPage}&limit=${perPage}`);
-  if (!res) {
-    loading.value = false;
-    return;
-  }
-
-  const { usersCount, data: list } = res;
-  totalUsers.value = usersCount;
-  users.value = list;
-
+  await getUsersList(targetPage);
   loading.value = false;
 }
 async function performSearch(search?: string) {
   loading.value = true;
 
-  const res = search
-    ? await $fetch<{ usersCount: number; data: IUser[] }>(`/api/user/list?search=${search}`)
-    : await $fetch<{ usersCount: number; data: IUser[] }>(`/api/user/list?offset=0&limit=${perPage}`);
-  if (!res) {
-    loading.value = false;
-
-    totalUsers.value = 0;
-    users.value = [];
-
-    return;
+  if (search) {
+    searched.value = true;
+    await searchUsers(search);
   }
-
-  const { usersCount, data: list } = res;
-  totalUsers.value = usersCount;
-  users.value = list;
+  else {
+    searched.value = false;
+    await getUsersList(page.value);
+  }
 
   loading.value = false;
 }
@@ -88,16 +71,15 @@ onMounted(async () => await loadUsers(page.value, false));
         <Button
           variant="outline"
           size="icon"
+          :disabled="loading"
           @click="loadUsers(page, false)"
         >
-          <RefreshCcw
-            v-if="loading"
-            class="animate-spin"
+          <RefreshCw
+            :class="{ 'animate-spin': loading }"
           />
-          <RefreshCcw v-else />
         </Button>
         <NewUserDialog @user-created="loadUsers(page, false)">
-          <Button>
+          <Button :disabled="loading">
             <Plus />
             <span>{{ t("admin.user.list.dialog.newUser.trigger") }}</span>
           </Button>
@@ -111,10 +93,10 @@ onMounted(async () => await loadUsers(page.value, false));
       />
 
       <Pagination
-        v-if="totalUsers > perPage"
+        v-if="totalUsers > usersPerPage && !searched"
         v-slot="{ page }"
         :total="totalUsers"
-        :items-per-page="perPage"
+        :items-per-page="usersPerPage"
         :sibling-count="1"
         show-edges
         :default-page="1"

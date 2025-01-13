@@ -19,3 +19,4 @@ export interface ICreateUserPayload {
   lastname: string;
   admin?: boolean;
 }
+export type IUpdateUserPayload = Partial<ICreateUserPayload>;

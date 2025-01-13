@@ -15,7 +15,7 @@ export async function protectRoute(event: HttpRequest, callback: (uuid: string) 
 
   if (!await authRepo.verify(token, userUuid))
     return error(event, {
-      code: HttpCode.Forbidden,
+      code: HttpCode.Gone,
       message: "Your session expired!",
     });
 
