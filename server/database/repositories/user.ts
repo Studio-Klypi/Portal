@@ -1,7 +1,7 @@
 import type { PrismaClientKnownRequestError } from "@prisma/client/runtime/binary";
 import argon2 from "argon2";
 import prisma from "~/server/database";
-import type { IBackUser, ICreateUserPayload, IUser } from "~/types/user";
+import type { IBackUser, ICreateUserPayload, IUpdateUserPayload, IUser } from "~/types/user";
 import { ConflictError, NotFoundError, UnauthorizedError } from "~/types/generics/error";
 
 export async function create(payload: ICreateUserPayload): Promise<IUser> {
@@ -25,6 +25,42 @@ export async function create(payload: ICreateUserPayload): Promise<IUser> {
         throw e;
     }
   }
+}
+export async function update(uuid: string, payload: IUpdateUserPayload): Promise<IUser> {
+  let data = {
+    ...payload,
+  };
+  if (data.password)
+    data = {
+      ...data,
+      password: await argon2.hash(data.password),
+    };
+
+  const dbUser = await prisma.user.update({
+    where: {
+      uuid,
+    },
+    data,
+  });
+  if (!dbUser)
+    throw new NotFoundError();
+
+  const user = { ...dbUser } as Partial<IBackUser>;
+  delete user.password;
+
+  return user as IUser;
+}
+export async function destroy(uuid: string): Promise<IUser> {
+  const user = await get(uuid);
+  if (!user)
+    throw new NotFoundError();
+
+  await prisma.user.delete({
+    where: {
+      uuid,
+    },
+  });
+  return user;
 }
 
 export async function get(uuid: string): Promise<IUser> {
@@ -57,6 +93,54 @@ export async function getByEmail(email: string): Promise<IUser> {
   delete user.password;
 
   return user as IUser;
+}
+export async function getList(offset: number, limit: number): Promise<IUser[]> {
+  const list = await prisma.user.findMany({
+    skip: offset,
+    take: limit,
+    orderBy: {
+      createdAt: "asc",
+    },
+  });
+  return list.map((dbUser) => {
+    const user = { ...dbUser } as Partial<IBackUser>;
+    delete user.password;
+    return user as IUser;
+  });
+}
+export async function search(search: string): Promise<IUser[]> {
+  const list = await prisma.user.findMany({
+    where: {
+      OR: [
+        {
+          firstname: {
+            contains: search,
+          },
+        },
+        {
+          lastname: {
+            contains: search,
+          },
+        },
+        {
+          email: {
+            contains: search,
+          },
+        },
+      ],
+    },
+    orderBy: {
+      createdAt: "asc",
+    },
+  });
+  return list.map((dbUser) => {
+    const user = { ...dbUser } as Partial<IBackUser>;
+    delete user.password;
+    return user as IUser;
+  });
+}
+export async function count(): Promise<number> {
+  return prisma.user.count();
 }
 
 export async function verifyPassword(email: string, password: string): Promise<boolean> {

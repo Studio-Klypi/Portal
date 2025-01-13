@@ -7,6 +7,11 @@ interface PageProps {
   class?: HTMLAttributes["class"];
 }
 const props = defineProps<PageProps>();
+
+const { t } = useI18n();
+useHead({
+  title: t(`${props.name ?? "home"}.tab`),
+});
 </script>
 
 <template>
@@ -14,6 +19,7 @@ const props = defineProps<PageProps>();
     :data-page="props.name ?? 'home'"
     :class="cn('w-full min-h-dvh', props.class)"
   >
+    <slot name="top" />
     <slot>{{ props.name }}</slot>
   </div>
 </template>

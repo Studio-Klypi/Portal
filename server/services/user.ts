@@ -1,16 +1,23 @@
 import type { HttpRequest } from "~/types/generics/http";
-import { handleError, HttpCode } from "~/types/generics/http";
+import { error, handleError, HttpCode } from "~/types/generics/http";
 import type { ICreateUserPayload } from "~/types/user";
 import * as userRepo from "~/server/database/repositories/user";
 import * as authRepo from "~/server/database/repositories/auth";
+import * as mailService from "~/server/services/email";
 import { ConflictError, NotFoundError, UnauthorizedError } from "~/types/generics/error";
 import { setAuthCookies } from "~/server/services/cookies";
+import userAccountCreatedTemplate from "~/server/emails/templates/auth/userAccountCreated";
+import userAccountDeletedTemplate from "~/server/emails/templates/auth/userAccountDeleted";
+import userPromotedTemplate from "~/server/emails/templates/auth/userPromoted";
+import userDemotedTemplate from "~/server/emails/templates/auth/userDemoted";
 
 export async function createAccount(event: HttpRequest, payload: ICreateUserPayload) {
   return handleError(
     event,
     async () => {
       const user = await userRepo.create(payload);
+
+      mailService.send(userAccountCreatedTemplate(payload.email, payload.password)).then();
 
       event.node.res.statusCode = HttpCode.Created;
       return user;
@@ -63,4 +70,113 @@ export async function whoAmI(event: HttpRequest, uuid: string) {
         };
     },
   );
+}
+
+export async function getUsersList(event: HttpRequest) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const params = getQuery(event) as any;
+  const offset = Number(params.offset ?? 0);
+  const limit = Number(params.limit ?? 20);
+  const search = params.search as string | undefined;
+
+  let list;
+
+  if (search)
+    list = await userRepo.search(search);
+  else
+    list = await userRepo.getList(offset, limit);
+
+  if (!list.length)
+    event.node.res.statusCode = HttpCode.NoContent;
+
+  return {
+    usersCount: await userRepo.count(),
+    data: list,
+  };
+}
+
+export async function updatePassword(event: HttpRequest) {
+  return handleError(event, async () => {
+    const password = (await readBody<{ password: string }>(event)).password;
+    const uuid = getRouterParam(event, "uuid");
+
+    if (!uuid)
+      return error(event, {
+        code: HttpCode.BadRequest,
+        message: "Missing uuid!",
+      });
+
+    return await userRepo.update(uuid, { password });
+  }, (e: unknown) => {
+    if (e instanceof NotFoundError)
+      return {
+        code: HttpCode.NotFound,
+        message: "User not found!",
+      };
+
+    return;
+  });
+}
+export async function updateAdminRole(event: HttpRequest) {
+  return handleError(event, async () => {
+    const admin = (await readBody<{ admin: boolean }>(event)).admin;
+    const uuid = getRouterParam(event, "uuid");
+
+    if (!uuid)
+      return error(event, {
+        code: HttpCode.BadRequest,
+        message: "Missing uuid!",
+      });
+
+    const user = await userRepo.get(uuid);
+    if (user.admin && admin)
+      return error(event, {
+        code: HttpCode.Conflict,
+        message: "User is already an administrator!",
+      });
+    if (!user.admin && !admin)
+      return error(event, {
+        code: HttpCode.Conflict,
+        message: "User is already a regular user!",
+      });
+
+    const updatedUser = await userRepo.update(uuid, {
+      admin,
+    });
+    mailService.send(updatedUser.admin
+      ? userPromotedTemplate(updatedUser.email)
+      : userDemotedTemplate(updatedUser.email)).then();
+
+    return updatedUser;
+  }, (e: unknown) => {
+    if (e instanceof NotFoundError)
+      return {
+        code: HttpCode.NotFound,
+        message: "User not found!",
+      };
+
+    return;
+  });
+}
+export async function deleteUser(event: HttpRequest) {
+  return handleError(event, async () => {
+    const uuid = getRouterParam(event, "uuid");
+    if (!uuid)
+      return error(event, {
+        code: HttpCode.BadRequest,
+        message: "Missing uuid!",
+      });
+
+    const user = await userRepo.get(uuid);
+    mailService.send(userAccountDeletedTemplate(user.email)).then();
+
+    return await userRepo.destroy(uuid);
+  }, (e: unknown) => {
+    if (e instanceof NotFoundError)
+      return {
+        code: HttpCode.NotFound,
+        message: "User not found!",
+      };
+    return;
+  });
 }

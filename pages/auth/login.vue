@@ -10,9 +10,6 @@ definePageMeta({
 });
 
 const { t } = useI18n();
-useHead({
-  title: `${t("auth.login.title")}`,
-});
 
 const loading = ref<boolean>(false);
 
@@ -37,7 +34,7 @@ const onSubmit = handleSubmit(async (values) => {
 
 <template>
   <PageRoot
-    name="auth/login"
+    name="auth.login"
     class="grid place-items-center"
   >
     <div class="flex flex-col items-start gap-3 w-[min(calc(100%-3rem),480px)]">

@@ -26,3 +26,22 @@ export async function verify(token: string, userUuid: string): Promise<boolean> 
     },
   });
 }
+
+export async function prune() {
+  await prisma.session.deleteMany({
+    where: {
+      OR: [
+        {
+          NOT: {
+            revokedAt: null,
+          },
+        },
+        {
+          expiresAt: {
+            lte: new Date(),
+          },
+        },
+      ],
+    },
+  });
+}

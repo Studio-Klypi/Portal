@@ -2,7 +2,6 @@
 export interface IUser {
   uuid: string;
   email: string;
-  password: string;
   firstname: string;
   lastname: string;
   avatarUri?: string | null;
@@ -20,3 +19,4 @@ export interface ICreateUserPayload {
   lastname: string;
   admin?: boolean;
 }
+export type IUpdateUserPayload = Partial<ICreateUserPayload>;

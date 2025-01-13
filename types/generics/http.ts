@@ -10,11 +10,12 @@ export enum HttpCode {
   NoContent = 204,
   PartialContent = 206,
   // 400
-  BaqRequest = 400,
+  BadRequest = 400,
   Unauthorized = 401,
   Forbidden = 403,
   NotFound = 404,
   Conflict = 409,
+  Gone = 410,
   // 500
   ServerError = 500,
 }
